@@ -8,5 +8,5 @@ export default defineConfig({
   server: {
     port: 3000,
   },
-  plugins: [tsConfigPaths(), tanstackStart()],
+  plugins: [tsConfigPaths(), tanstackStart({ target: 'vercel' })],
 });
