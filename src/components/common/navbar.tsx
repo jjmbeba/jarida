@@ -1,4 +1,6 @@
 import {
+  ClerkLoaded,
+  ClerkLoading,
   SignedIn,
   SignedOut,
   SignInButton,
@@ -6,6 +8,7 @@ import {
 } from '@clerk/tanstack-react-start';
 import { Link, linkOptions } from '@tanstack/react-router';
 import { Button } from '../ui/button';
+import { Skeleton } from '../ui/skeleton';
 
 const Navbar = () => {
   const links = linkOptions([
@@ -32,16 +35,21 @@ const Navbar = () => {
             {link.label}
           </Link>
         ))}
-        <SignedIn>
-          <UserButton />
-        </SignedIn>
-        <SignedOut>
-          <SignInButton>
-            <Button size={'sm'} variant="outline">
-              Sign in
-            </Button>
-          </SignInButton>
-        </SignedOut>
+        <ClerkLoading>
+          <Skeleton className="h-7 w-7 rounded-full" />
+        </ClerkLoading>
+        <ClerkLoaded>
+          <SignedIn>
+            <UserButton />
+          </SignedIn>
+          <SignedOut>
+            <SignInButton>
+              <Button size={'sm'} variant="outline">
+                Sign in
+              </Button>
+            </SignInButton>
+          </SignedOut>
+        </ClerkLoaded>
       </div>
     </div>
   );
