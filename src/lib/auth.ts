@@ -12,10 +12,12 @@ export const fetchClerkAuth = createServerFn({ method: 'GET' }).handler(
       };
     }
 
-    const { userId } = await getAuth(request);
+    const { userId, getToken } = await getAuth(request);
+    const token = await getToken({ template: 'convex' });
 
     return {
       userId,
+      token,
     };
   }
 );

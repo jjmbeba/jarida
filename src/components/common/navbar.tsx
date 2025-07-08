@@ -7,7 +7,8 @@ import {
   UserButton,
 } from '@clerk/tanstack-react-start';
 import { Link, linkOptions } from '@tanstack/react-router';
-import { Button } from '../ui/button';
+import { cn } from '@/lib/utils';
+import { Button, buttonVariants } from '../ui/button';
 import { Skeleton } from '../ui/skeleton';
 
 const Navbar = () => {
@@ -17,10 +18,6 @@ const Navbar = () => {
       label: 'Home',
     },
     {
-      to: '/about',
-      label: 'About',
-    },
-    {
       to: '/protected',
       label: 'Protected',
     },
@@ -28,10 +25,24 @@ const Navbar = () => {
 
   return (
     <div className="flex items-center justify-between p-4">
-      <h2>Jarida</h2>
-      <div className="flex items-center gap-4">
+      <Link to="/">
+        <h2>Jarida</h2>
+      </Link>
+      <div className="flex items-center gap-2">
         {links.map((link) => (
-          <Link key={link.to} to={link.to}>
+          <Link
+            activeProps={{
+              className: 'underline',
+            }}
+            className={cn(
+              buttonVariants({
+                variant: 'link',
+                size: 'sm',
+              })
+            )}
+            key={link.to}
+            to={link.to}
+          >
             {link.label}
           </Link>
         ))}
