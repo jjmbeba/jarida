@@ -1,5 +1,9 @@
+import { useConvexMutation } from '@convex-dev/react-query';
 import { useForm } from '@tanstack/react-form';
+import { useMutation } from '@tanstack/react-query';
+import { api } from 'convex/_generated/api';
 import { Loader2 } from 'lucide-react';
+import { toast } from 'sonner';
 import { z } from 'zod';
 import { Button } from '../ui/button';
 import { Input } from '../ui/input';
@@ -7,6 +11,16 @@ import { Label } from '../ui/label';
 import { Textarea } from '../ui/textarea';
 
 const JournalForm = () => {
+    const { mutate: createEntry, isPending: isCreatingEntry } = useMutation({
+        mutationFn: useConvexMutation(api.entries.createEntry),
+        onSuccess: () => {
+            toast.success('Entry created successfully');
+            form.reset();
+        },
+        onError: () => {
+            toast.error('Failed to create entry');
+        },
+    });
     const form = useForm({
         validators: {
             onSubmit: z.object({
@@ -19,8 +33,7 @@ const JournalForm = () => {
             content: '',
         },
         onSubmit: ({ value }) => {
-            console.log(value);
-            //Do something
+            createEntry(value);
         },
     });
 
@@ -85,7 +98,7 @@ const JournalForm = () => {
                 {([canSubmit, isSubmitting]) => (
                     <Button disabled={!canSubmit} type="submit">
                         {canSubmit ? (
-                            isSubmitting ? (
+                            isSubmitting || isCreatingEntry ? (
                                 <div className="flex items-center gap-2">
                                     <Loader2 className="size-4 animate-spin" />
                                     <span>Saving...</span>
