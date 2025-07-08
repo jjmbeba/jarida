@@ -16,6 +16,7 @@ import { TanStackRouterDevtools } from '@tanstack/react-router-devtools';
 import type { ConvexReactClient } from 'convex/react';
 import { ConvexProviderWithClerk } from 'convex/react-clerk';
 import type { ReactNode } from 'react';
+import { Toaster } from 'sonner';
 import Navbar from '@/components/common/navbar';
 import { fetchClerkAuth } from '@/lib/auth';
 import appCss from '@/styles/app.css?url';
@@ -44,8 +45,8 @@ export const Route = createRootRouteWithContext<{
         href: appCss,
       },
       {
-        rel: "stylesheet",
-        href: "https://fonts.googleapis.com/css2?family=Outfit:ital,wght@0,300;0,400;0,500;0,700;1,300;1,400;1,500;1,700&display=swap"
+        rel: 'stylesheet',
+        href: 'https://fonts.googleapis.com/css2?family=Outfit:ital,wght@0,300;0,400;0,500;0,700;1,300;1,400;1,500;1,700&display=swap',
       },
       {
         rel: 'stylesheet',
@@ -74,7 +75,7 @@ function RootComponent() {
 }
 
 function RootDocument({ children }: Readonly<{ children: ReactNode }>) {
-  const context = useRouteContext({ from: Route.id })
+  const context = useRouteContext({ from: Route.id });
   return (
     <ClerkProvider>
       <ConvexProviderWithClerk client={context.convexClient} useAuth={useAuth}>
@@ -87,6 +88,7 @@ function RootDocument({ children }: Readonly<{ children: ReactNode }>) {
             <div className="px-10">
               <Navbar />
               {children}
+              <Toaster richColors />
             </div>
             <TanStackRouterDevtools position="bottom-right" />
             <ReactQueryDevtools buttonPosition="bottom-left" />

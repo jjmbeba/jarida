@@ -110,7 +110,6 @@ const Navbar = () => {
                     </Link>
                   ))}
                 </div>
-
                 {/* Auth Section at Bottom */}
                 <div className="mt-auto pt-6">
                   <div className='flex w-full flex-col space-y-2'>
@@ -137,23 +136,6 @@ const Navbar = () => {
               </div>
             </SheetContent>
           </Sheet>
-
-          {/* Mobile Auth Button (outside sheet) */}
-          <ClerkLoading>
-            <Skeleton className="h-7 w-7 rounded-full" />
-          </ClerkLoading>
-          <ClerkLoaded>
-            <SignedIn>
-              <UserButton />
-            </SignedIn>
-            <SignedOut>
-              <SignInButton>
-                <Button size={'sm'} variant="outline">
-                  Sign in
-                </Button>
-              </SignInButton>
-            </SignedOut>
-          </ClerkLoaded>
         </div>
       </div>
     </nav>
