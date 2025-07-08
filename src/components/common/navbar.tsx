@@ -7,6 +7,7 @@ import {
   UserButton,
 } from '@clerk/tanstack-react-start';
 import { Link } from '@tanstack/react-router';
+import { useState } from 'react';
 import { navLinks } from '@/constants';
 import { cn } from '@/lib/utils';
 import { Button, buttonVariants } from '../ui/button';
@@ -14,6 +15,12 @@ import { Sheet, SheetContent, SheetTrigger } from '../ui/sheet';
 import { Skeleton } from '../ui/skeleton';
 
 const Navbar = () => {
+  const [isMobileMenuOpen, setIsMobileMenuOpen] = useState(false);
+
+  const handleNavigation = () => {
+    setIsMobileMenuOpen(false);
+  };
+
   return (
     <nav className="relative">
       <div className="flex items-center justify-between py-4">
@@ -59,7 +66,7 @@ const Navbar = () => {
 
         {/* Mobile Menu */}
         <div className="flex items-center gap-2 md:hidden">
-          <Sheet>
+          <Sheet onOpenChange={setIsMobileMenuOpen} open={isMobileMenuOpen}>
             <SheetTrigger asChild>
               <Button
                 aria-label="Toggle mobile menu"
@@ -87,9 +94,9 @@ const Navbar = () => {
               className="flex w-[300px] flex-col sm:w-[400px]"
               side="right"
             >
-              <div className='flex h-full flex-col'>
+              <div className="flex h-full flex-col">
                 {/* Navigation Links */}
-                <div className='mt-8 flex flex-col space-y-2'>
+                <div className="mt-8 flex flex-col space-y-2">
                   {navLinks.map((link) => (
                     <Link
                       activeProps={{
@@ -104,6 +111,7 @@ const Navbar = () => {
                         'h-auto justify-start px-4 py-3 text-left'
                       )}
                       key={link.to}
+                      onClick={handleNavigation}
                       to={link.to}
                     >
                       {link.label}
@@ -112,7 +120,7 @@ const Navbar = () => {
                 </div>
                 {/* Auth Section at Bottom */}
                 <div className="mt-auto pt-6">
-                  <div className='flex w-full flex-col space-y-2'>
+                  <div className="flex w-full flex-col space-y-2">
                     <ClerkLoading>
                       <Skeleton className="h-10 w-full rounded-md" />
                     </ClerkLoading>
