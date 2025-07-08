@@ -1,13 +1,15 @@
 import { convexQuery } from '@convex-dev/react-query';
 import { useQuery } from '@tanstack/react-query';
-import { createFileRoute } from '@tanstack/react-router';
+import { createFileRoute, Link } from '@tanstack/react-router';
 import { api } from 'convex/_generated/api';
 import AddEntryButton from '@/components/journal/add-entry-btn';
 import DeleteEntryButton from '@/components/journal/delete-entry-btn';
 import { Badge } from '@/components/ui/badge';
+import { buttonVariants } from '@/components/ui/button';
 import { Card, CardContent, CardHeader, CardTitle } from '@/components/ui/card';
+import { cn } from '@/lib/utils';
 
-export const Route = createFileRoute('/_protected/journal')({
+export const Route = createFileRoute('/_protected/journal/')({
   component: RouteComponent,
   loader: async ({ context }) => {
     await context.queryClient.ensureQueryData(
@@ -38,25 +40,32 @@ function RouteComponent() {
           {entries && entries.length > 0 ? (
             <div className="grid gap-4 sm:grid-cols-2 lg:grid-cols-3">
               {entries.map((entry) => (
-                <Card
-                  className="transition-shadow hover:shadow-md"
+                <Link
                   key={entry._id}
+                  params={{ entry: entry._id }}
+                  to="/journal/$entry"
                 >
-                  <CardHeader>
-                    <CardTitle className="line-clamp-2 flex items-center justify-between">
-                      <div className="flex items-center gap-2">
-                        {entry.title}
-                        <Badge variant="outline">tag</Badge>
-                      </div>
-                      <DeleteEntryButton entryId={entry._id} />
-                    </CardTitle>
-                  </CardHeader>
-                  {entry.content && (
-                    <CardContent>
-                      <p className="line-clamp-3 text-sm">{entry.content}</p>
-                    </CardContent>
-                  )}
-                </Card>
+                  <Card className="transition-shadow hover:shadow-md">
+                    <CardHeader>
+                      <CardTitle className="line-clamp-2 flex items-center justify-between">
+                        <div
+                          className="flex items-center gap-2"
+                        >
+                          <span className={cn(buttonVariants({ variant: 'link' }), 'pl-0')}>
+                            {entry.title}
+                          </span>
+                          <Badge variant="outline">tag</Badge>
+                        </div>
+                        <DeleteEntryButton entryId={entry._id} />
+                      </CardTitle>
+                    </CardHeader>
+                    {entry.content && (
+                      <CardContent>
+                        <p className="line-clamp-3 text-sm">{entry.content}</p>
+                      </CardContent>
+                    )}
+                  </Card>
+                </Link>
               ))}
             </div>
           ) : (
