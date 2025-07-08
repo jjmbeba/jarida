@@ -1,32 +1,17 @@
-import { useConvexMutation } from '@convex-dev/react-query';
 import { useForm } from '@tanstack/react-form';
-import { useMutation } from '@tanstack/react-query';
-import { api } from 'convex/_generated/api';
 import { Loader2 } from 'lucide-react';
-import { toast } from 'sonner';
-import { z } from 'zod';
+import { useCreateEntry } from '@/hooks/entries';
+import { createEntrySchema } from '@/schemas/entries';
 import { Button } from '../ui/button';
 import { Input } from '../ui/input';
 import { Label } from '../ui/label';
 import { Textarea } from '../ui/textarea';
 
 const JournalForm = () => {
-    const { mutate: createEntry, isPending: isCreatingEntry } = useMutation({
-        mutationFn: useConvexMutation(api.entries.createEntry),
-        onSuccess: () => {
-            toast.success('Entry created successfully');
-            form.reset();
-        },
-        onError: () => {
-            toast.error('Failed to create entry');
-        },
-    });
+    const { mutate: createEntry, isPending: isCreatingEntry } = useCreateEntry();
     const form = useForm({
         validators: {
-            onSubmit: z.object({
-                title: z.string().min(1, 'Title is required'),
-                content: z.string().min(1, 'Content is required'),
-            }),
+            onSubmit: createEntrySchema,
         },
         defaultValues: {
             title: '',
