@@ -17,8 +17,10 @@ import {
 import { Button, buttonVariants } from '../ui/button';
 
 const DeleteEntryButton = ({ entryId }: { entryId: Id<'entries'> }) => {
-    const { mutate: deleteEntry, isPending: isDeleting } = useDeleteEntry();
     const [open, setOpen] = useState(false);
+    const { mutate: deleteEntry, isPending: isDeleting } = useDeleteEntry({
+        setOpen,
+    });
 
     return (
         <AlertDialog onOpenChange={setOpen} open={open}>

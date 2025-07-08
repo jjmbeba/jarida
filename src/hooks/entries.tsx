@@ -15,11 +15,12 @@ export const useCreateEntry = () => {
     });
 };
 
-export const useDeleteEntry = () => {
+export const useDeleteEntry = ({ setOpen }: { setOpen: (open: boolean) => void }) => {
     return useMutation({
         mutationFn: useConvexMutation(api.entries.deleteEntry),
         onSuccess: () => {
             toast.success('Entry deleted successfully');
+            setOpen(false);
         },
         onError: (error) => {
             toast.error(error.message);

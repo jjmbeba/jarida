@@ -1,4 +1,4 @@
-// biome-ignore lint/performance/noNamespaceImport: <blah>
+// biome-ignore lint/performance/noNamespaceImport: Radix UI requires namespace imports for proper type inference
 import * as AlertDialogPrimitive from '@radix-ui/react-alert-dialog';
 import type * as React from 'react';
 import { buttonVariants } from '@/components/ui/button';

@@ -81,7 +81,7 @@ const JournalForm = () => {
                 selector={(state) => [state.canSubmit, state.isSubmitting]}
             >
                 {([canSubmit, isSubmitting]) => (
-                    <Button disabled={!canSubmit} type="submit">
+                    <Button disabled={!canSubmit || isSubmitting || isCreatingEntry} type="submit">
                         {canSubmit ? (
                             isSubmitting || isCreatingEntry ? (
                                 <div className="flex items-center gap-2">
