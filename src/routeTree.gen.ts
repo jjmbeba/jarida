@@ -11,7 +11,9 @@
 import { Route as rootRouteImport } from './routes/__root'
 import { Route as ProtectedRouteRouteImport } from './routes/_protected/route'
 import { Route as IndexRouteImport } from './routes/index'
-import { Route as ProtectedProtectedRouteImport } from './routes/_protected/protected'
+import { Route as ProtectedSettingsRouteImport } from './routes/_protected/settings'
+import { Route as ProtectedJournalRouteImport } from './routes/_protected/journal'
+import { Route as ProtectedHistoryRouteImport } from './routes/_protected/history'
 
 const ProtectedRouteRoute = ProtectedRouteRouteImport.update({
   id: '/_protected',
@@ -22,32 +24,54 @@ const IndexRoute = IndexRouteImport.update({
   path: '/',
   getParentRoute: () => rootRouteImport,
 } as any)
-const ProtectedProtectedRoute = ProtectedProtectedRouteImport.update({
-  id: '/protected',
-  path: '/protected',
+const ProtectedSettingsRoute = ProtectedSettingsRouteImport.update({
+  id: '/settings',
+  path: '/settings',
+  getParentRoute: () => ProtectedRouteRoute,
+} as any)
+const ProtectedJournalRoute = ProtectedJournalRouteImport.update({
+  id: '/journal',
+  path: '/journal',
+  getParentRoute: () => ProtectedRouteRoute,
+} as any)
+const ProtectedHistoryRoute = ProtectedHistoryRouteImport.update({
+  id: '/history',
+  path: '/history',
   getParentRoute: () => ProtectedRouteRoute,
 } as any)
 
 export interface FileRoutesByFullPath {
   '/': typeof IndexRoute
-  '/protected': typeof ProtectedProtectedRoute
+  '/history': typeof ProtectedHistoryRoute
+  '/journal': typeof ProtectedJournalRoute
+  '/settings': typeof ProtectedSettingsRoute
 }
 export interface FileRoutesByTo {
   '/': typeof IndexRoute
-  '/protected': typeof ProtectedProtectedRoute
+  '/history': typeof ProtectedHistoryRoute
+  '/journal': typeof ProtectedJournalRoute
+  '/settings': typeof ProtectedSettingsRoute
 }
 export interface FileRoutesById {
   __root__: typeof rootRouteImport
   '/': typeof IndexRoute
   '/_protected': typeof ProtectedRouteRouteWithChildren
-  '/_protected/protected': typeof ProtectedProtectedRoute
+  '/_protected/history': typeof ProtectedHistoryRoute
+  '/_protected/journal': typeof ProtectedJournalRoute
+  '/_protected/settings': typeof ProtectedSettingsRoute
 }
 export interface FileRouteTypes {
   fileRoutesByFullPath: FileRoutesByFullPath
-  fullPaths: '/' | '/protected'
+  fullPaths: '/' | '/history' | '/journal' | '/settings'
   fileRoutesByTo: FileRoutesByTo
-  to: '/' | '/protected'
-  id: '__root__' | '/' | '/_protected' | '/_protected/protected'
+  to: '/' | '/history' | '/journal' | '/settings'
+  id:
+    | '__root__'
+    | '/'
+    | '/_protected'
+    | '/_protected/history'
+    | '/_protected/journal'
+    | '/_protected/settings'
   fileRoutesById: FileRoutesById
 }
 export interface RootRouteChildren {
@@ -71,22 +95,40 @@ declare module '@tanstack/react-router' {
       preLoaderRoute: typeof IndexRouteImport
       parentRoute: typeof rootRouteImport
     }
-    '/_protected/protected': {
-      id: '/_protected/protected'
-      path: '/protected'
-      fullPath: '/protected'
-      preLoaderRoute: typeof ProtectedProtectedRouteImport
+    '/_protected/settings': {
+      id: '/_protected/settings'
+      path: '/settings'
+      fullPath: '/settings'
+      preLoaderRoute: typeof ProtectedSettingsRouteImport
+      parentRoute: typeof ProtectedRouteRoute
+    }
+    '/_protected/journal': {
+      id: '/_protected/journal'
+      path: '/journal'
+      fullPath: '/journal'
+      preLoaderRoute: typeof ProtectedJournalRouteImport
+      parentRoute: typeof ProtectedRouteRoute
+    }
+    '/_protected/history': {
+      id: '/_protected/history'
+      path: '/history'
+      fullPath: '/history'
+      preLoaderRoute: typeof ProtectedHistoryRouteImport
       parentRoute: typeof ProtectedRouteRoute
     }
   }
 }
 
 interface ProtectedRouteRouteChildren {
-  ProtectedProtectedRoute: typeof ProtectedProtectedRoute
+  ProtectedHistoryRoute: typeof ProtectedHistoryRoute
+  ProtectedJournalRoute: typeof ProtectedJournalRoute
+  ProtectedSettingsRoute: typeof ProtectedSettingsRoute
 }
 
 const ProtectedRouteRouteChildren: ProtectedRouteRouteChildren = {
-  ProtectedProtectedRoute: ProtectedProtectedRoute,
+  ProtectedHistoryRoute: ProtectedHistoryRoute,
+  ProtectedJournalRoute: ProtectedJournalRoute,
+  ProtectedSettingsRoute: ProtectedSettingsRoute,
 }
 
 const ProtectedRouteRouteWithChildren = ProtectedRouteRoute._addFileChildren(
