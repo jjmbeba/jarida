@@ -9,8 +9,20 @@ export const useCreateEntry = () => {
         onSuccess: () => {
             toast.success('Entry created successfully');
         },
-        onError: () => {
-            toast.error('Failed to create entry');
+        onError: (error) => {
+            toast.error(error.message);
+        },
+    });
+};
+
+export const useDeleteEntry = () => {
+    return useMutation({
+        mutationFn: useConvexMutation(api.entries.deleteEntry),
+        onSuccess: () => {
+            toast.success('Entry deleted successfully');
+        },
+        onError: (error) => {
+            toast.error(error.message);
         },
     });
 };

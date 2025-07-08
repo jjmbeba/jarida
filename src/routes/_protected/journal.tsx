@@ -48,7 +48,7 @@ function RouteComponent() {
                         {entry.title}
                         <Badge variant="outline">tag</Badge>
                       </div>
-                      <DeleteEntryButton />
+                      <DeleteEntryButton entryId={entry._id} />
                     </CardTitle>
                   </CardHeader>
                   {entry.content && (

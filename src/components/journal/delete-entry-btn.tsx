@@ -1,4 +1,7 @@
+import type { Id } from 'convex/_generated/dataModel';
 import { TrashIcon } from 'lucide-react';
+import { useState } from 'react';
+import { useDeleteEntry } from '@/hooks/entries';
 import { cn } from '@/lib/utils';
 import {
     AlertDialog,
@@ -13,9 +16,12 @@ import {
 } from '../ui/alert-dialog';
 import { Button, buttonVariants } from '../ui/button';
 
-const DeleteEntryButton = () => {
+const DeleteEntryButton = ({ entryId }: { entryId: Id<'entries'> }) => {
+    const { mutate: deleteEntry, isPending: isDeleting } = useDeleteEntry();
+    const [open, setOpen] = useState(false);
+
     return (
-        <AlertDialog>
+        <AlertDialog onOpenChange={setOpen} open={open}>
             <AlertDialogTrigger asChild>
                 <Button size={'icon'} variant="outline">
                     <TrashIcon />
@@ -33,8 +39,12 @@ const DeleteEntryButton = () => {
                     <AlertDialogCancel>Cancel</AlertDialogCancel>
                     <AlertDialogAction
                         className={cn(buttonVariants({ variant: 'destructive' }))}
+                        onClick={() => {
+                            deleteEntry({ id: entryId });
+                            setOpen(false);
+                        }}
                     >
-                        Delete
+                        {isDeleting ? 'Deleting...' : 'Delete'}
                     </AlertDialogAction>
                 </AlertDialogFooter>
             </AlertDialogContent>
