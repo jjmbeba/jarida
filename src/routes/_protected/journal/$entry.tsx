@@ -18,6 +18,7 @@ function RouteComponent() {
   const { data: entryData } = useQuery(
     convexQuery(api.entries.getEntry, { id: entry as Id<'entries'> })
   );
+
   return <div>
     <h1 className="page-title">
       {entryData?.title}

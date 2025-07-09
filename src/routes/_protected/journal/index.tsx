@@ -2,7 +2,7 @@ import { convexQuery } from '@convex-dev/react-query';
 import { useQuery } from '@tanstack/react-query';
 import { createFileRoute, Link } from '@tanstack/react-router';
 import { api } from 'convex/_generated/api';
-import AddEntryButton from '@/components/journal/add-entry-btn';
+import { PlusIcon } from 'lucide-react';
 import DeleteEntryButton from '@/components/journal/delete-entry-btn';
 import { Badge } from '@/components/ui/badge';
 import { buttonVariants } from '@/components/ui/button';
@@ -25,10 +25,14 @@ function RouteComponent() {
   return (
     <div className="mt-4 sm:mt-5">
       <div className="flex flex-col gap-4 sm:flex-row sm:items-center sm:justify-between">
-        <h1 className="page-title">
-          Journal
-        </h1>
-        <AddEntryButton />
+        <h1 className="page-title">Journal</h1>
+        <Link
+          className={cn(buttonVariants({ variant: 'outline' }))}
+          to="/journal/create-entry"
+        >
+          <PlusIcon className="h-4 w-4" />
+          Create Entry
+        </Link>
       </div>
 
       {isLoading ? (
@@ -40,32 +44,34 @@ function RouteComponent() {
           {entries && entries.length > 0 ? (
             <div className="grid gap-4 sm:grid-cols-2 lg:grid-cols-3">
               {entries.map((entry) => (
-                <Link
+                <Card
+                  className="transition-shadow hover:shadow-md"
                   key={entry._id}
-                  params={{ entry: entry._id }}
-                  to="/journal/$entry"
                 >
-                  <Card className="transition-shadow hover:shadow-md">
-                    <CardHeader>
-                      <CardTitle className="line-clamp-2 flex items-center justify-between">
-                        <div
-                          className="flex items-center gap-2"
+                  <CardHeader>
+                    <CardTitle className="line-clamp-2 flex items-center justify-between">
+                      <div className="flex items-center gap-2">
+                        <Link
+                          className={cn(
+                            buttonVariants({ variant: 'link' }),
+                            'pl-0'
+                          )}
+                          params={{ entry: entry._id }}
+                          to="/journal/$entry"
                         >
-                          <span className={cn(buttonVariants({ variant: 'link' }), 'pl-0')}>
-                            {entry.title}
-                          </span>
-                          <Badge variant="outline">tag</Badge>
-                        </div>
-                        <DeleteEntryButton entryId={entry._id} />
-                      </CardTitle>
-                    </CardHeader>
-                    {entry.content && (
-                      <CardContent>
-                        <p className="line-clamp-3 text-sm">{entry.content}</p>
-                      </CardContent>
-                    )}
-                  </Card>
-                </Link>
+                          {entry.title}
+                        </Link>
+                        <Badge variant="outline">tag</Badge>
+                      </div>
+                      <DeleteEntryButton entryId={entry._id} />
+                    </CardTitle>
+                  </CardHeader>
+                  {entry.content && (
+                    <CardContent>
+                      <p className="line-clamp-3 text-sm">{entry.content}</p>
+                    </CardContent>
+                  )}
+                </Card>
               ))}
             </div>
           ) : (
