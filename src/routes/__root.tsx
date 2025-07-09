@@ -85,7 +85,7 @@ function RootDocument({ children }: Readonly<{ children: ReactNode }>) {
             <HeadContent />
           </head>
           <body>
-            <div className="px-10">
+            <div className="px-10 pb-10">
               <Navbar />
               {children}
               <Toaster richColors />

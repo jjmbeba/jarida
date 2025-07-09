@@ -5,7 +5,7 @@ import { createEntrySchema } from '@/schemas/entries';
 import { Button } from '../ui/button';
 import { Input } from '../ui/input';
 import { Label } from '../ui/label';
-import { Textarea } from '../ui/textarea';
+import JournalEditor from './journal-editor';
 
 const JournalForm = () => {
     const { mutate: createEntry, isPending: isCreatingEntry } = useCreateEntry();
@@ -60,13 +60,16 @@ const JournalForm = () => {
                             <Label className="font-medium text-sm" htmlFor="content">
                                 Content
                             </Label>
-                            <Textarea
+                            {/* <Textarea
                                 className="w-full resize-none rounded-md border border-input bg-background px-3 py-2 text-sm ring-offset-background placeholder:text-muted-foreground focus:outline-none focus:ring-2 focus:ring-ring focus:ring-offset-2"
                                 id="content"
                                 onChange={(e) => field.handleChange(e.target.value)}
                                 placeholder="Write your thoughts..."
                                 rows={6}
                                 value={field.state.value}
+                            /> */}
+                            <JournalEditor
+                                onChange={field.handleChange}
                             />
                         </div>
                         {field.state.meta.errors.map((error) => (
@@ -81,7 +84,10 @@ const JournalForm = () => {
                 selector={(state) => [state.canSubmit, state.isSubmitting]}
             >
                 {([canSubmit, isSubmitting]) => (
-                    <Button disabled={!canSubmit || isSubmitting || isCreatingEntry} type="submit">
+                    <Button
+                        disabled={!canSubmit || isSubmitting || isCreatingEntry}
+                        type="submit"
+                    >
                         {canSubmit ? (
                             isSubmitting || isCreatingEntry ? (
                                 <div className="flex items-center gap-2">

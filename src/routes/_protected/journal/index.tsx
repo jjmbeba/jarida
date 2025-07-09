@@ -27,7 +27,7 @@ function RouteComponent() {
       <div className="flex flex-col gap-4 sm:flex-row sm:items-center sm:justify-between">
         <h1 className="page-title">Journal</h1>
         <Link
-          className={cn(buttonVariants({ variant: 'outline' }))}
+          className={cn(buttonVariants({ variant: 'outline', size: 'sm' }))}
           to="/journal/create-entry"
         >
           <PlusIcon className="h-4 w-4" />
