@@ -75,59 +75,63 @@ const JournalForm = ({ type, ...props }: Props) => {
                 form.handleSubmit();
             }}
         >
-            <div className="flex items-center gap-2 *:w-1/2">
-                <form.Field name="title">
-                    {(field) => (
-                        <>
+            <div className="flex flex-col gap-4 sm:flex-row sm:items-center sm:gap-2">
+                <div className="w-full sm:w-1/2">
+                    <form.Field name="title">
+                        {(field) => (
+                            <>
+                                <div className="space-y-2">
+                                    <Label className="font-medium text-sm" htmlFor="title">
+                                        Title
+                                    </Label>
+                                    <Input
+                                        className="w-full rounded-md border border-input bg-background px-3 py-2 text-sm ring-offset-background placeholder:text-muted-foreground focus:outline-none focus:ring-2 focus:ring-ring focus:ring-offset-2"
+                                        id="title"
+                                        onChange={(e) => field.handleChange(e.target.value)}
+                                        placeholder="Enter entry title..."
+                                        value={field.state.value}
+                                    />
+                                </div>
+                                {field.state.meta.errors.map((error) => (
+                                    <div className="error" key={error?.message}>
+                                        {error?.message}
+                                    </div>
+                                ))}
+                            </>
+                        )}
+                    </form.Field>
+                </div>
+                <div className="w-full sm:w-1/2">
+                    <form.Field name="tags">
+                        {(field) => (
                             <div className="space-y-2">
                                 <Label className="font-medium text-sm" htmlFor="title">
-                                    Title
+                                    Tags
                                 </Label>
-                                <Input
-                                    className="w-full rounded-md border border-input bg-background px-3 py-2 text-sm ring-offset-background placeholder:text-muted-foreground focus:outline-none focus:ring-2 focus:ring-ring focus:ring-offset-2"
-                                    id="title"
-                                    onChange={(e) => field.handleChange(e.target.value)}
-                                    placeholder="Enter entry title..."
-                                    value={field.state.value}
+                                <TagInput
+                                    activeTagIndex={activeTagIndex}
+                                    id={'tags'}
+                                    placeholder="Add a tag"
+                                    setActiveTagIndex={setActiveTagIndex}
+                                    setTags={(newTags) => {
+                                        field.handleChange(newTags);
+                                    }}
+                                    styleClasses={{
+                                        inlineTagsContainer:
+                                            'border-input rounded-md bg-background shadow-xs transition-[color,box-shadow] focus-within:border-ring outline-none focus-within:ring-[3px] focus-within:ring-ring/50 p-1 gap-1',
+                                        input: 'w-full min-w-[80px] shadow-none px-2 h-7',
+                                        tag: {
+                                            body: 'h-7 relative bg-background border border-input hover:bg-background rounded-md font-medium text-xs ps-2 pe-7',
+                                            closeButton:
+                                                'absolute -inset-y-px -end-px p-0 rounded-e-md flex size-7 transition-[color,box-shadow] outline-none focus-visible:border-ring focus-visible:ring-ring/50 focus-visible:ring-[3px] text-muted-foreground/80 hover:text-foreground',
+                                        },
+                                    }}
+                                    tags={field.state.value}
                                 />
                             </div>
-                            {field.state.meta.errors.map((error) => (
-                                <div className="error" key={error?.message}>
-                                    {error?.message}
-                                </div>
-                            ))}
-                        </>
-                    )}
-                </form.Field>
-                <form.Field name="tags">
-                    {(field) => (
-                        <div className="space-y-2">
-                            <Label className="font-medium text-sm" htmlFor="title">
-                                Tags
-                            </Label>
-                            <TagInput
-                                activeTagIndex={activeTagIndex}
-                                id={'tags'}
-                                placeholder="Add a tag"
-                                setActiveTagIndex={setActiveTagIndex}
-                                setTags={(newTags) => {
-                                    field.handleChange(newTags);
-                                }}
-                                styleClasses={{
-                                    inlineTagsContainer:
-                                        'border-input rounded-md bg-background shadow-xs transition-[color,box-shadow] focus-within:border-ring outline-none focus-within:ring-[3px] focus-within:ring-ring/50 p-1 gap-1',
-                                    input: 'w-full min-w-[80px] shadow-none px-2 h-7',
-                                    tag: {
-                                        body: 'h-7 relative bg-background border border-input hover:bg-background rounded-md font-medium text-xs ps-2 pe-7',
-                                        closeButton:
-                                            'absolute -inset-y-px -end-px p-0 rounded-e-md flex size-7 transition-[color,box-shadow] outline-none focus-visible:border-ring focus-visible:ring-ring/50 focus-visible:ring-[3px] text-muted-foreground/80 hover:text-foreground',
-                                    },
-                                }}
-                                tags={field.state.value}
-                            />
-                        </div>
-                    )}
-                </form.Field>
+                        )}
+                    </form.Field>
+                </div>
             </div>
             <form.Field name="content">
                 {(field) => (
