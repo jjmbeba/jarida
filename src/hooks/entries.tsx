@@ -19,6 +19,18 @@ export const useCreateEntry = () => {
     });
 };
 
+export const useUpdateEntry = () => {
+    return useMutation({
+        mutationFn: useConvexMutation(api.entries.updateEntry),
+        onSuccess: () => {
+            toast.success('Entry updated successfully');
+        },
+        onError: (error) => {
+            toast.error(error.message);
+        },
+    });
+};
+
 export const useDeleteEntry = ({ setOpen }: { setOpen: (open: boolean) => void }) => {
     return useMutation({
         mutationFn: useConvexMutation(api.entries.deleteEntry),

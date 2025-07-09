@@ -9,7 +9,7 @@ function RouteComponent() {
   return (
     <div>
       <h1 className="page-title">Create Entry</h1>
-      <JournalForm />
+      <JournalForm mode="create" type="create" />
     </div>
   );
 }

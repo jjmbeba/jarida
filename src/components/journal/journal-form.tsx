@@ -1,24 +1,63 @@
 import { useForm } from '@tanstack/react-form';
+import type { Id } from 'convex/_generated/dataModel';
 import { Loader2 } from 'lucide-react';
-import { useCreateEntry } from '@/hooks/entries';
+import { entryDefaultValue } from '@/constants';
+import { useCreateEntry, useUpdateEntry } from '@/hooks/entries';
 import { createEntrySchema } from '@/schemas/entries';
 import { Button } from '../ui/button';
 import { Input } from '../ui/input';
 import { Label } from '../ui/label';
 import JournalEditor from './journal-editor';
 
-const JournalForm = () => {
+type createEntryProps = {
+    type: 'create';
+    mode: 'create';
+};
+
+type updateEntryProps = {
+    type: 'update';
+    entry: {
+        _id: Id<'entries'>;
+        _creationTime: number;
+        content: string;
+        title: string;
+        userId: string;
+        tags: string[];
+        createdAt: number;
+        updatedAt: number;
+        encrypted: boolean;
+    };
+    mode: 'update' | 'view';
+};
+
+type Props = createEntryProps | updateEntryProps;
+
+const JournalForm = ({ type, ...props }: Props) => {
     const { mutate: createEntry, isPending: isCreatingEntry } = useCreateEntry();
+    const { mutate: updateEntry, isPending: isUpdatingEntry } = useUpdateEntry();
     const form = useForm({
         validators: {
             onSubmit: createEntrySchema,
         },
         defaultValues: {
-            title: '',
-            content: '',
+            title: type === 'create' ? '' : ('entry' in props ? props.entry.title : ''),
+            content:
+                type === 'create'
+                    ? JSON.stringify(entryDefaultValue)
+                    : ('entry' in props
+                        ? props.entry.content
+                        : ''),
         },
         onSubmit: ({ value }) => {
-            createEntry(value);
+            if (type === 'create') {
+                createEntry(value);
+            } else {
+                updateEntry({
+                    id: ('entry' in props ? props.entry._id : '') as Id<'entries'>,
+                    title: value.title,
+                    content: value.content,
+                });
+            }
         },
     });
 
@@ -61,7 +100,9 @@ const JournalForm = () => {
                                 Content
                             </Label>
                             <JournalEditor
+                                mode={props.mode}
                                 onChange={field.handleChange}
+                                value={field.state.value}
                             />
                         </div>
                         {field.state.meta.errors.map((error) => (
@@ -77,17 +118,17 @@ const JournalForm = () => {
             >
                 {([canSubmit, isSubmitting]) => (
                     <Button
-                        disabled={!canSubmit || isSubmitting || isCreatingEntry}
+                        disabled={!canSubmit || isSubmitting || isCreatingEntry || isUpdatingEntry}
                         type="submit"
                     >
                         {canSubmit ? (
-                            isSubmitting || isCreatingEntry ? (
+                            isSubmitting || isCreatingEntry || isUpdatingEntry ? (
                                 <div className="flex items-center gap-2">
                                     <Loader2 className="size-4 animate-spin" />
-                                    <span>Saving...</span>
+                                    <span>{type === 'create' ? 'Creating...' : 'Updating...'}</span>
                                 </div>
                             ) : (
-                                'Save Entry'
+                                type === 'create' ? 'Create Entry' : 'Update Entry'
                             )
                         ) : (
                             'Please fill in all fields'

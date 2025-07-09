@@ -65,6 +65,37 @@ export const getEntry = query({
   },
 });
 
+export const updateEntry = mutation({
+  args: {
+    id: v.id('entries'),
+    title: v.string(),
+    content: v.string(),
+  },
+  handler: async (ctx, args) => {
+    const identity = await ctx.auth.getUserIdentity();
+
+    if (!identity) {
+      throw new Error('Unauthorized');
+    }
+
+    const entry = await ctx.db.get(args.id);
+
+    if (!entry) {
+      throw new Error('Entry not found');
+    }
+
+    if (entry.userId !== identity.subject) {
+      throw new Error('Unauthorized');
+    }
+
+    return await ctx.db.patch(args.id, {
+      title: args.title,
+      content: args.content,
+      updatedAt: Date.now(),
+    });
+  },
+});
+
 export const deleteEntry = mutation({
   args: {
     id: v.id('entries'),

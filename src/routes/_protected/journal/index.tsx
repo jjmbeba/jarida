@@ -6,7 +6,7 @@ import { PlusIcon } from 'lucide-react';
 import DeleteEntryButton from '@/components/journal/delete-entry-btn';
 import { Badge } from '@/components/ui/badge';
 import { buttonVariants } from '@/components/ui/button';
-import { Card, CardContent, CardHeader, CardTitle } from '@/components/ui/card';
+import { Card, CardHeader, CardTitle } from '@/components/ui/card';
 import { cn } from '@/lib/utils';
 
 export const Route = createFileRoute('/_protected/journal/')({
@@ -66,11 +66,6 @@ function RouteComponent() {
                       <DeleteEntryButton entryId={entry._id} />
                     </CardTitle>
                   </CardHeader>
-                  {entry.content && (
-                    <CardContent>
-                      <p className="line-clamp-3 text-sm">{entry.content}</p>
-                    </CardContent>
-                  )}
                 </Card>
               ))}
             </div>
