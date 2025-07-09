@@ -40,6 +40,31 @@ export const createEntry = mutation({
   },
 });
 
+export const getEntry = query({
+  args: {
+    id: v.id('entries'),
+  },
+  handler: async (ctx, args) => {
+    const identity = await ctx.auth.getUserIdentity();
+
+    if (!identity) {
+      throw new Error('Unauthorized');
+    }
+
+    const entry = await ctx.db
+      .query('entries')
+      .withIndex('by_id', (q) => q.eq('_id', args.id))
+      .filter((q) => q.eq(q.field('userId'), identity.subject))
+      .first();
+
+    if (!entry) {
+      throw new Error('Entry not found');
+    }
+
+    return entry;
+  },
+});
+
 export const deleteEntry = mutation({
   args: {
     id: v.id('entries'),

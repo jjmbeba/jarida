@@ -25,7 +25,7 @@ function RouteComponent() {
   return (
     <div className="mt-4 sm:mt-5">
       <div className="flex flex-col gap-4 sm:flex-row sm:items-center sm:justify-between">
-        <h1 className="scroll-m-20 pb-2 font-semibold text-2xl tracking-tight first:mt-0 sm:text-3xl">
+        <h1 className="page-title">
           Journal
         </h1>
         <AddEntryButton />
