@@ -12,7 +12,7 @@ export default defineSchema({
     content: v.string(),
     createdAt: v.number(),
     updatedAt: v.number(),
-    tags: v.array(v.string()),
+    tags: v.array(v.object({ id: v.string(), text: v.string() })),
     encrypted: v.boolean(),
   }),
 });

@@ -12,8 +12,10 @@ import { Route as rootRouteImport } from './routes/__root'
 import { Route as ProtectedRouteRouteImport } from './routes/_protected/route'
 import { Route as IndexRouteImport } from './routes/index'
 import { Route as ProtectedSettingsRouteImport } from './routes/_protected/settings'
-import { Route as ProtectedJournalRouteImport } from './routes/_protected/journal'
 import { Route as ProtectedHistoryRouteImport } from './routes/_protected/history'
+import { Route as ProtectedJournalIndexRouteImport } from './routes/_protected/journal/index'
+import { Route as ProtectedJournalCreateEntryRouteImport } from './routes/_protected/journal/create-entry'
+import { Route as ProtectedJournalEntryRouteImport } from './routes/_protected/journal/$entry'
 
 const ProtectedRouteRoute = ProtectedRouteRouteImport.update({
   id: '/_protected',
@@ -29,49 +31,80 @@ const ProtectedSettingsRoute = ProtectedSettingsRouteImport.update({
   path: '/settings',
   getParentRoute: () => ProtectedRouteRoute,
 } as any)
-const ProtectedJournalRoute = ProtectedJournalRouteImport.update({
-  id: '/journal',
-  path: '/journal',
-  getParentRoute: () => ProtectedRouteRoute,
-} as any)
 const ProtectedHistoryRoute = ProtectedHistoryRouteImport.update({
   id: '/history',
   path: '/history',
+  getParentRoute: () => ProtectedRouteRoute,
+} as any)
+const ProtectedJournalIndexRoute = ProtectedJournalIndexRouteImport.update({
+  id: '/journal/',
+  path: '/journal/',
+  getParentRoute: () => ProtectedRouteRoute,
+} as any)
+const ProtectedJournalCreateEntryRoute =
+  ProtectedJournalCreateEntryRouteImport.update({
+    id: '/journal/create-entry',
+    path: '/journal/create-entry',
+    getParentRoute: () => ProtectedRouteRoute,
+  } as any)
+const ProtectedJournalEntryRoute = ProtectedJournalEntryRouteImport.update({
+  id: '/journal/$entry',
+  path: '/journal/$entry',
   getParentRoute: () => ProtectedRouteRoute,
 } as any)
 
 export interface FileRoutesByFullPath {
   '/': typeof IndexRoute
   '/history': typeof ProtectedHistoryRoute
-  '/journal': typeof ProtectedJournalRoute
   '/settings': typeof ProtectedSettingsRoute
+  '/journal/$entry': typeof ProtectedJournalEntryRoute
+  '/journal/create-entry': typeof ProtectedJournalCreateEntryRoute
+  '/journal': typeof ProtectedJournalIndexRoute
 }
 export interface FileRoutesByTo {
   '/': typeof IndexRoute
   '/history': typeof ProtectedHistoryRoute
-  '/journal': typeof ProtectedJournalRoute
   '/settings': typeof ProtectedSettingsRoute
+  '/journal/$entry': typeof ProtectedJournalEntryRoute
+  '/journal/create-entry': typeof ProtectedJournalCreateEntryRoute
+  '/journal': typeof ProtectedJournalIndexRoute
 }
 export interface FileRoutesById {
   __root__: typeof rootRouteImport
   '/': typeof IndexRoute
   '/_protected': typeof ProtectedRouteRouteWithChildren
   '/_protected/history': typeof ProtectedHistoryRoute
-  '/_protected/journal': typeof ProtectedJournalRoute
   '/_protected/settings': typeof ProtectedSettingsRoute
+  '/_protected/journal/$entry': typeof ProtectedJournalEntryRoute
+  '/_protected/journal/create-entry': typeof ProtectedJournalCreateEntryRoute
+  '/_protected/journal/': typeof ProtectedJournalIndexRoute
 }
 export interface FileRouteTypes {
   fileRoutesByFullPath: FileRoutesByFullPath
-  fullPaths: '/' | '/history' | '/journal' | '/settings'
+  fullPaths:
+    | '/'
+    | '/history'
+    | '/settings'
+    | '/journal/$entry'
+    | '/journal/create-entry'
+    | '/journal'
   fileRoutesByTo: FileRoutesByTo
-  to: '/' | '/history' | '/journal' | '/settings'
+  to:
+    | '/'
+    | '/history'
+    | '/settings'
+    | '/journal/$entry'
+    | '/journal/create-entry'
+    | '/journal'
   id:
     | '__root__'
     | '/'
     | '/_protected'
     | '/_protected/history'
-    | '/_protected/journal'
     | '/_protected/settings'
+    | '/_protected/journal/$entry'
+    | '/_protected/journal/create-entry'
+    | '/_protected/journal/'
   fileRoutesById: FileRoutesById
 }
 export interface RootRouteChildren {
@@ -102,13 +135,6 @@ declare module '@tanstack/react-router' {
       preLoaderRoute: typeof ProtectedSettingsRouteImport
       parentRoute: typeof ProtectedRouteRoute
     }
-    '/_protected/journal': {
-      id: '/_protected/journal'
-      path: '/journal'
-      fullPath: '/journal'
-      preLoaderRoute: typeof ProtectedJournalRouteImport
-      parentRoute: typeof ProtectedRouteRoute
-    }
     '/_protected/history': {
       id: '/_protected/history'
       path: '/history'
@@ -116,19 +142,44 @@ declare module '@tanstack/react-router' {
       preLoaderRoute: typeof ProtectedHistoryRouteImport
       parentRoute: typeof ProtectedRouteRoute
     }
+    '/_protected/journal/': {
+      id: '/_protected/journal/'
+      path: '/journal'
+      fullPath: '/journal'
+      preLoaderRoute: typeof ProtectedJournalIndexRouteImport
+      parentRoute: typeof ProtectedRouteRoute
+    }
+    '/_protected/journal/create-entry': {
+      id: '/_protected/journal/create-entry'
+      path: '/journal/create-entry'
+      fullPath: '/journal/create-entry'
+      preLoaderRoute: typeof ProtectedJournalCreateEntryRouteImport
+      parentRoute: typeof ProtectedRouteRoute
+    }
+    '/_protected/journal/$entry': {
+      id: '/_protected/journal/$entry'
+      path: '/journal/$entry'
+      fullPath: '/journal/$entry'
+      preLoaderRoute: typeof ProtectedJournalEntryRouteImport
+      parentRoute: typeof ProtectedRouteRoute
+    }
   }
 }
 
 interface ProtectedRouteRouteChildren {
   ProtectedHistoryRoute: typeof ProtectedHistoryRoute
-  ProtectedJournalRoute: typeof ProtectedJournalRoute
   ProtectedSettingsRoute: typeof ProtectedSettingsRoute
+  ProtectedJournalEntryRoute: typeof ProtectedJournalEntryRoute
+  ProtectedJournalCreateEntryRoute: typeof ProtectedJournalCreateEntryRoute
+  ProtectedJournalIndexRoute: typeof ProtectedJournalIndexRoute
 }
 
 const ProtectedRouteRouteChildren: ProtectedRouteRouteChildren = {
   ProtectedHistoryRoute: ProtectedHistoryRoute,
-  ProtectedJournalRoute: ProtectedJournalRoute,
   ProtectedSettingsRoute: ProtectedSettingsRoute,
+  ProtectedJournalEntryRoute: ProtectedJournalEntryRoute,
+  ProtectedJournalCreateEntryRoute: ProtectedJournalCreateEntryRoute,
+  ProtectedJournalIndexRoute: ProtectedJournalIndexRoute,
 }
 
 const ProtectedRouteRouteWithChildren = ProtectedRouteRoute._addFileChildren(
