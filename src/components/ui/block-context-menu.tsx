@@ -1,7 +1,3 @@
-'use client';
-
-import * as React from 'react';
-
 import { AIChatPlugin } from '@platejs/ai/react';
 import {
   BLOCK_CONTEXT_MENU_ID,
@@ -10,7 +6,7 @@ import {
 } from '@platejs/selection/react';
 import { KEYS } from 'platejs';
 import { useEditorPlugin, usePlateState } from 'platejs/react';
-
+import { useCallback, useState } from 'react';
 import {
   ContextMenu,
   ContextMenuContent,
@@ -27,29 +23,24 @@ type Value = 'askAI' | null;
 
 export function BlockContextMenu({ children }: { children: React.ReactNode }) {
   const { api, editor } = useEditorPlugin(BlockMenuPlugin);
-  const [value, setValue] = React.useState<Value>(null);
+  const [value, setValue] = useState<Value>(null);
   const isTouch = useIsTouchDevice();
   const [readOnly] = usePlateState('readOnly');
 
-  const handleTurnInto = React.useCallback(
+  const handleTurnInto = useCallback(
     (type: string) => {
-      editor
-        .getApi(BlockSelectionPlugin)
-        .blockSelection.getNodes()
-        .forEach(([node, path]) => {
-          if (node[KEYS.listType]) {
-            editor.tf.unsetNodes([KEYS.listType, 'indent'], {
-              at: path,
-            });
-          }
-
-          editor.tf.toggleBlock(type, { at: path });
-        });
+      const nodes = editor.getApi(BlockSelectionPlugin).blockSelection.getNodes();
+      for (const [node, path] of nodes) {
+        if (node[KEYS.listType]) {
+          editor.tf.unsetNodes([KEYS.listType, 'indent'], { at: path });
+        }
+        editor.tf.toggleBlock(type, { at: path });
+      }
     },
     [editor]
   );
 
-  const handleAlign = React.useCallback(
+  const handleAlign = useCallback(
     (align: 'center' | 'left' | 'right') => {
       editor
         .getTransforms(BlockSelectionPlugin)
@@ -64,6 +55,7 @@ export function BlockContextMenu({ children }: { children: React.ReactNode }) {
 
   return (
     <ContextMenu
+      modal={false}
       onOpenChange={(open) => {
         if (!open) {
           // prevent unselect the block selection
@@ -72,7 +64,6 @@ export function BlockContextMenu({ children }: { children: React.ReactNode }) {
           }, 0);
         }
       }}
-      modal={false}
     >
       <ContextMenuTrigger
         asChild
@@ -81,7 +72,9 @@ export function BlockContextMenu({ children }: { children: React.ReactNode }) {
 
           const disabled = dataset?.slateEditor === 'true' || readOnly;
 
-          if (disabled) return event.preventDefault();
+          if (disabled) {
+            return event.preventDefault();
+          }
 
           api.blockMenu.show(BLOCK_CONTEXT_MENU_ID, {
             x: event.clientX,

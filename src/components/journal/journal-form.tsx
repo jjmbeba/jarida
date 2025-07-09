@@ -60,14 +60,6 @@ const JournalForm = () => {
                             <Label className="font-medium text-sm" htmlFor="content">
                                 Content
                             </Label>
-                            {/* <Textarea
-                                className="w-full resize-none rounded-md border border-input bg-background px-3 py-2 text-sm ring-offset-background placeholder:text-muted-foreground focus:outline-none focus:ring-2 focus:ring-ring focus:ring-offset-2"
-                                id="content"
-                                onChange={(e) => field.handleChange(e.target.value)}
-                                placeholder="Write your thoughts..."
-                                rows={6}
-                                value={field.state.value}
-                            /> */}
                             <JournalEditor
                                 onChange={field.handleChange}
                             />
