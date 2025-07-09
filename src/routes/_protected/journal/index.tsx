@@ -61,7 +61,11 @@ function RouteComponent() {
                         >
                           {entry.title}
                         </Link>
-                        <Badge variant="outline">tag</Badge>
+                        {entry.tags.map((tag) => (
+                          <Badge key={tag.id} variant="outline">
+                            {tag.text}
+                          </Badge>
+                        ))}
                       </div>
                       <DeleteEntryButton entryId={entry._id} />
                     </CardTitle>

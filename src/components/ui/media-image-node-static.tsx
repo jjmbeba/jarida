@@ -1,5 +1,3 @@
-import * as React from 'react';
-
 import type {
   SlateElementProps,
   TCaptionProps,
@@ -20,15 +18,15 @@ export function ImageElementStatic(
     <SlateElement {...props} className="py-2.5">
       <figure className="group relative m-0 inline-block" style={{ width }}>
         <div
-          className="relative max-w-full min-w-[92px]"
+          className='relative min-w-[92px] max-w-full'
           style={{ textAlign: align }}
         >
           <img
+            alt={(props.attributes as { alt?: string }).alt}
             className={cn(
               'w-full max-w-full cursor-default object-cover px-0',
               'rounded-sm'
             )}
-            alt={(props.attributes as any).alt}
             src={url}
           />
           {caption && (

@@ -1,8 +1,5 @@
-import * as React from 'react';
-
-import type { SlateElementProps, TFileElement } from 'platejs';
-
 import { FileUp } from 'lucide-react';
+import type { SlateElementProps, TFileElement } from 'platejs';
 import { SlateElement } from 'platejs';
 
 export function FileElementStatic(props: SlateElementProps<TFileElement>) {
@@ -16,7 +13,6 @@ export function FileElementStatic(props: SlateElementProps<TFileElement>) {
         download={name}
         href={url}
         rel="noopener noreferrer"
-        role="button"
         target="_blank"
       >
         <div className="flex items-center gap-1 p-1">

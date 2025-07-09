@@ -20,6 +20,7 @@ export const createEntry = mutation({
   args: {
     title: v.string(),
     content: v.string(),
+    tags: v.array(v.object({ id: v.string(), text: v.string() })),
   },
   handler: async (ctx, args) => {
     const identity = await ctx.auth.getUserIdentity();
@@ -34,7 +35,7 @@ export const createEntry = mutation({
       userId: identity.subject,
       createdAt: Date.now(),
       updatedAt: Date.now(),
-      tags: [],
+      tags: args.tags,
       encrypted: false,
     });
   },
@@ -70,6 +71,7 @@ export const updateEntry = mutation({
     id: v.id('entries'),
     title: v.string(),
     content: v.string(),
+    tags: v.array(v.object({ id: v.string(), text: v.string() })),
   },
   handler: async (ctx, args) => {
     const identity = await ctx.auth.getUserIdentity();
@@ -91,6 +93,7 @@ export const updateEntry = mutation({
     return await ctx.db.patch(args.id, {
       title: args.title,
       content: args.content,
+      tags: args.tags,
       updatedAt: Date.now(),
     });
   },

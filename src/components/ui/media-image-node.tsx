@@ -1,13 +1,8 @@
-'use client';
-
-import * as React from 'react';
-
-import type { TImageElement } from 'platejs';
-import type { PlateElementProps } from 'platejs/react';
-
 import { useDraggable } from '@platejs/dnd';
 import { Image, ImagePlugin, useMediaState } from '@platejs/media/react';
 import { ResizableProvider, useResizableValue } from '@platejs/resizable';
+import type { TImageElement } from 'platejs';
+import type { PlateElementProps } from 'platejs/react';
 import { PlateElement, withHOC } from 'platejs/react';
 
 import { cn } from '@/lib/utils';
@@ -22,7 +17,7 @@ import {
 
 export const ImageElement = withHOC(
   ResizableProvider,
-  function ImageElement(props: PlateElementProps<TImageElement>) {
+  function MediaImageElement(props: PlateElementProps<TImageElement>) {
     const { align = 'center', focused, readOnly, selected } = useMediaState();
     const width = useResizableValue('width');
 
@@ -46,14 +41,14 @@ export const ImageElement = withHOC(
                 options={{ direction: 'left' }}
               />
               <Image
-                ref={handleRef}
+                alt={props.attributes.alt as string | undefined}
                 className={cn(
                   'block w-full max-w-full cursor-pointer object-cover px-0',
                   'rounded-sm',
                   focused && selected && 'ring-2 ring-ring ring-offset-2',
                   isDragging && 'opacity-50'
                 )}
-                alt={props.attributes.alt as string | undefined}
+                ref={handleRef}
               />
               <ResizeHandle
                 className={mediaResizeHandleVariants({
@@ -63,13 +58,13 @@ export const ImageElement = withHOC(
               />
             </Resizable>
 
-            <Caption style={{ width }} align={align}>
+            <Caption align={align} style={{ width }}>
               <CaptionTextarea
-                readOnly={readOnly}
                 onFocus={(e) => {
                   e.preventDefault();
                 }}
                 placeholder="Write a caption..."
+                readOnly={readOnly}
               />
             </Caption>
           </figure>

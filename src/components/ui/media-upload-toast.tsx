@@ -1,9 +1,6 @@
-'use client';
-
-import * as React from 'react';
-
 import { PlaceholderPlugin, UploadErrorCode } from '@platejs/media/react';
 import { usePluginOption } from 'platejs/react';
+import { useEffect } from 'react';
 import { toast } from 'sonner';
 
 export function MediaUploadToast() {
@@ -15,8 +12,10 @@ export function MediaUploadToast() {
 const useUploadErrorToast = () => {
   const uploadError = usePluginOption(PlaceholderPlugin, 'error');
 
-  React.useEffect(() => {
-    if (!uploadError) return;
+  useEffect(() => {
+    if (!uploadError) {
+      return;
+    }
 
     const { code, data } = uploadError;
 
@@ -57,11 +56,13 @@ const useUploadErrorToast = () => {
       }
       case UploadErrorCode.TOO_MANY_FILES: {
         toast.error(
-          `The maximum number of files is ${data.maxFileCount} ${
-            data.fileType ? `for ${data.fileType}` : ''
+          `The maximum number of files is ${data.maxFileCount} ${data.fileType ? `for ${data.fileType}` : ''
           }`
         );
 
+        break;
+      }
+      default: {
         break;
       }
     }

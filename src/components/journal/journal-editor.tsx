@@ -16,9 +16,12 @@ const JournalEditor = ({ onChange, value }: Props) => {
     });
 
     return (
-        <Plate editor={editor} onChange={({ value: newValue }) => {
-            onChange(JSON.stringify(newValue))
-        }}>
+        <Plate
+            editor={editor}
+            onChange={({ value: newValue }) => {
+                onChange(JSON.stringify(newValue));
+            }}
+        >
             <EditorContainer variant={'demo'}>
                 <Editor placeholder="Write your journal entry..." />
             </EditorContainer>

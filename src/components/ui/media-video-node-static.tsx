@@ -1,5 +1,3 @@
-import * as React from 'react';
-
 import type {
   SlateElementProps,
   TCaptionElement,
@@ -23,9 +21,11 @@ export function VideoElementStatic(
         >
           <video
             className="w-full max-w-full rounded-sm object-cover px-0"
-            src={url}
             controls
-          />
+            src={url}
+          >
+            <track kind="captions" src="" />
+          </video>
           {caption && <figcaption>{NodeApi.string(caption[0])}</figcaption>}
         </figure>
       </div>

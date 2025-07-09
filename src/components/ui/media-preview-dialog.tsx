@@ -1,5 +1,3 @@
-'use client';
-
 import {
   PreviewImage,
   useImagePreview,
@@ -52,11 +50,10 @@ export function MediaPreviewDialog() {
         'fixed top-0 left-0 z-50 h-screen w-screen select-none',
         !isOpen && 'hidden'
       )}
-      onContextMenu={(e) => e.stopPropagation()}
       {...maskLayerProps}
     >
-      <div className="absolute inset-0 size-full bg-black opacity-30"></div>
-      <div className="absolute inset-0 size-full bg-black opacity-30"></div>
+      <div className="absolute inset-0 size-full bg-black opacity-30" />
+      <div className="absolute inset-0 size-full bg-black opacity-30" />
       <div className="absolute inset-0 flex items-center justify-center">
         <div className="relative flex max-h-screen w-full items-center">
           <PreviewImage
@@ -65,8 +62,7 @@ export function MediaPreviewDialog() {
             )}
           />
           <div
-            className="absolute bottom-0 left-1/2 z-40 flex w-fit -translate-x-1/2 justify-center gap-4 p-2 text-center text-white"
-            onClick={(e) => e.stopPropagation()}
+            className='-translate-x-1/2 absolute bottom-0 left-1/2 z-40 flex w-fit justify-center gap-4 p-2 text-center text-white'
           >
             <div className="flex gap-1">
               <button
@@ -112,7 +108,7 @@ export function MediaPreviewDialog() {
                     <span>%</span>
                   </>
                 ) : (
-                  <span {...scaleTextProps}>{scale * 100 + '%'}</span>
+                  <span {...scaleTextProps}>{`${scale * 100}%`}</span>
                 )}
               </div>
               <button

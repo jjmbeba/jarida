@@ -1,22 +1,17 @@
-'use client';
-
-import * as React from 'react';
-
-import type { TPlaceholderElement } from 'platejs';
-import type { PlateElementProps } from 'platejs/react';
-
 import {
   PlaceholderPlugin,
   PlaceholderProvider,
   updateUploadHistory,
 } from '@platejs/media/react';
 import { AudioLines, FileUp, Film, ImageIcon, Loader2Icon } from 'lucide-react';
+import type { TPlaceholderElement } from 'platejs';
 import { KEYS } from 'platejs';
+import type { PlateElementProps } from 'platejs/react';
 import { PlateElement, useEditorPlugin, withHOC } from 'platejs/react';
+import React, { useCallback, useEffect, useRef } from 'react';
 import { useFilePicker } from 'use-file-picker';
-
-import { cn } from '@/lib/utils';
 import { useUploadFile } from '@/hooks/use-upload-file';
+import { cn } from '@/lib/utils';
 
 const CONTENT: Record<
   string,
@@ -50,7 +45,7 @@ const CONTENT: Record<
 
 export const PlaceholderElement = withHOC(
   PlaceholderProvider,
-  function PlaceholderElement(props: PlateElementProps<TPlaceholderElement>) {
+  function PlaceholderNode(props: PlateElementProps<TPlaceholderElement>) {
     const { editor, element } = props;
 
     const { api } = useEditorPlugin(PlaceholderPlugin);
@@ -64,7 +59,7 @@ export const PlaceholderElement = withHOC(
 
     const isImage = element.mediaType === KEYS.img;
 
-    const imageRef = React.useRef<HTMLImageElement>(null);
+    const imageRef = useRef<HTMLImageElement>(null);
 
     const { openFilePicker } = useFilePicker({
       accept: currentContent.accept,
@@ -81,16 +76,18 @@ export const PlaceholderElement = withHOC(
       },
     });
 
-    const replaceCurrentPlaceholder = React.useCallback(
+    const replaceCurrentPlaceholder = useCallback(
       (file: File) => {
-        void uploadFile(file);
+        uploadFile(file);
         api.placeholder.addUploadingFile(element.id as string, file);
       },
       [api.placeholder, element.id, uploadFile]
     );
 
-    React.useEffect(() => {
-      if (!uploadedFile) return;
+    useEffect(() => {
+      if (!uploadedFile) {
+        return;
+      }
 
       const path = editor.api.findPath(element);
 
@@ -104,7 +101,7 @@ export const PlaceholderElement = withHOC(
           isUpload: true,
           name: element.mediaType === KEYS.file ? uploadedFile.name : '',
           placeholderId: element.id as string,
-          type: element.mediaType!,
+          type: element.mediaType,
           url: uploadedFile.url,
         };
 
@@ -115,41 +112,53 @@ export const PlaceholderElement = withHOC(
 
       api.placeholder.removeUploadingFile(element.id as string);
       // eslint-disable-next-line react-hooks/exhaustive-deps
-    }, [uploadedFile, element.id]);
+    }, [uploadedFile, element, editor, api.placeholder]);
 
     // React dev mode will call React.useEffect twice
-    const isReplaced = React.useRef(false);
+    const isReplaced = useRef(false);
 
     /** Paste and drop */
-    React.useEffect(() => {
-      if (isReplaced.current) return;
+    useEffect(() => {
+      if (isReplaced.current) {
+        return;
+      }
 
       isReplaced.current = true;
       const currentFiles = api.placeholder.getUploadingFile(
         element.id as string
       );
 
-      if (!currentFiles) return;
+      if (!currentFiles) {
+        return;
+      }
 
       replaceCurrentPlaceholder(currentFiles);
 
       // eslint-disable-next-line react-hooks/exhaustive-deps
-    }, [isReplaced]);
+    }, [api.placeholder, element.id, replaceCurrentPlaceholder]);
 
     return (
       <PlateElement className="my-1" {...props}>
-        {(!loading || !isImage) && (
-          <div
+        {!(loading && isImage) && (
+          <button
             className={cn(
-              'flex cursor-pointer items-center rounded-sm bg-muted p-3 pr-9 select-none hover:bg-primary/10'
+              'flex cursor-pointer select-none items-center rounded-sm bg-muted p-3 pr-9 hover:bg-primary/10'
             )}
-            onClick={() => !loading && openFilePicker()}
             contentEditable={false}
+            disabled={!!loading}
+            onClick={() => !loading && openFilePicker()}
+            onKeyDown={(e) => {
+              if ((e.key === 'Enter' || e.key === ' ') && !loading) {
+                e.preventDefault();
+                openFilePicker();
+              }
+            }}
+            type="button"
           >
             <div className="relative mr-3 flex text-muted-foreground/80 [&_svg]:size-6">
               {currentContent.icon}
             </div>
-            <div className="text-sm whitespace-nowrap text-muted-foreground">
+            <div className='whitespace-nowrap text-muted-foreground text-sm'>
               <div>
                 {loading ? uploadingFile?.name : currentContent.content}
               </div>
@@ -165,7 +174,7 @@ export const PlaceholderElement = withHOC(
                 </div>
               )}
             </div>
-          </div>
+          </button>
         )}
 
         {isImage && loading && (
@@ -211,15 +220,15 @@ export function ImageProgress({
   return (
     <div className={cn('relative', className)} contentEditable={false}>
       <img
-        ref={imageRef}
-        className="h-auto w-full rounded-sm object-cover"
         alt={file.name}
+        className="h-auto w-full rounded-sm object-cover"
+        ref={imageRef}
         src={objectUrl}
       />
       {progress < 100 && (
         <div className="absolute right-1 bottom-1 flex items-center space-x-2 rounded-full bg-black/50 px-1 py-0.5">
           <Loader2Icon className="size-3.5 animate-spin text-muted-foreground" />
-          <span className="text-xs font-medium text-white">
+          <span className='font-medium text-white text-xs'>
             {Math.round(progress)}%
           </span>
         </div>
@@ -240,13 +249,14 @@ function formatBytes(
   const sizes = ['Bytes', 'KB', 'MB', 'GB', 'TB'];
   const accurateSizes = ['Bytes', 'KiB', 'MiB', 'GiB', 'TiB'];
 
-  if (bytes === 0) return '0 Byte';
+  if (bytes === 0) {
+    return '0 Byte';
+  }
 
   const i = Math.floor(Math.log(bytes) / Math.log(1024));
 
-  return `${(bytes / Math.pow(1024, i)).toFixed(decimals)} ${
-    sizeType === 'accurate'
-      ? (accurateSizes[i] ?? 'Bytest')
-      : (sizes[i] ?? 'Bytes')
-  }`;
+  return `${(bytes / 1024 ** i).toFixed(decimals)} ${sizeType === 'accurate'
+    ? (accurateSizes[i] ?? 'Bytest')
+    : (sizes[i] ?? 'Bytes')
+    }`;
 }

@@ -1,9 +1,3 @@
-'use client';
-
-import * as React from 'react';
-
-import type { WithRequiredKey } from 'platejs';
-
 import {
   FloatingMedia as FloatingMediaPrimitive,
   FloatingMediaStore,
@@ -12,6 +6,7 @@ import {
 } from '@platejs/media/react';
 import { cva } from 'class-variance-authority';
 import { Link, Trash2Icon } from 'lucide-react';
+import type { WithRequiredKey } from 'platejs';
 import {
   useEditorRef,
   useEditorSelector,
@@ -20,7 +15,7 @@ import {
   useRemoveNodeButton,
   useSelected,
 } from 'platejs/react';
-
+import { useEffect } from 'react';
 import { Button, buttonVariants } from '@/components/ui/button';
 import {
   Popover,
@@ -28,11 +23,10 @@ import {
   PopoverContent,
 } from '@/components/ui/popover';
 import { Separator } from '@/components/ui/separator';
-
 import { CaptionButton } from './caption';
 
 const inputVariants = cva(
-  'flex h-[28px] w-full rounded-md border-none bg-transparent px-1.5 py-1 text-base placeholder:text-muted-foreground focus-visible:ring-transparent focus-visible:outline-none md:text-sm'
+  'flex h-[28px] w-full rounded-md border-none bg-transparent px-1.5 py-1 text-base placeholder:text-muted-foreground focus-visible:outline-none focus-visible:ring-transparent md:text-sm'
 );
 
 export function MediaToolbar({
@@ -46,29 +40,27 @@ export function MediaToolbar({
   const readOnly = useReadOnly();
   const selected = useSelected();
 
-  const selectionCollapsed = useEditorSelector(
-    (editor) => !editor.api.isExpanded(),
-    []
-  );
+  const selectionCollapsed = useEditorSelector((e) => !e.api.isExpanded(), []);
   const isImagePreviewOpen = useImagePreviewValue('isOpen', editor.id);
   const isOpen =
     !readOnly && selected && selectionCollapsed && !isImagePreviewOpen;
   const isEditing = useFloatingMediaValue('isEditing');
 
-  React.useEffect(() => {
+  useEffect(() => {
     if (!isOpen && isEditing) {
       FloatingMediaStore.set('isEditing', false);
     }
-    // eslint-disable-next-line react-hooks/exhaustive-deps
-  }, [isOpen]);
+  }, [isOpen, isEditing]);
 
   const element = useElement();
   const { props: buttonProps } = useRemoveNodeButton({ element });
 
-  if (readOnly) return <>{children}</>;
+  if (readOnly) {
+    return <>{children}</>;
+  }
 
   return (
-    <Popover open={isOpen} modal={false}>
+    <Popover modal={false} open={isOpen}>
       <PopoverAnchor>{children}</PopoverAnchor>
 
       <PopoverContent
@@ -84,8 +76,8 @@ export function MediaToolbar({
 
               <FloatingMediaPrimitive.UrlInput
                 className={inputVariants()}
-                placeholder="Paste the embed link..."
                 options={{ plugin }}
+                placeholder="Paste the embed link..."
               />
             </div>
           </div>
@@ -101,7 +93,7 @@ export function MediaToolbar({
               Caption
             </CaptionButton>
 
-            <Separator orientation="vertical" className="mx-1 h-6" />
+            <Separator className="mx-1 h-6" orientation="vertical" />
 
             <Button size="sm" variant="ghost" {...buttonProps}>
               <Trash2Icon />
